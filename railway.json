@@ -1,0 +1,19 @@
+{
+  "build": {
+    "builder": "NIXPACKS"
+  },
+  "deploy": {
+    "services": [
+      {
+        "name": "telegram-bot",
+        "command": "python -m bot.main",
+        "type": "worker"
+      },
+      {
+        "name": "admin-panel",
+        "command": "uvicorn admin_panel.main:app --host 0.0.0.0 --port 8000",
+        "type": "web"
+      }
+    ]
+  }
+}
