@@ -1,4 +1,17 @@
 import os
+import sys
+
+# Проверка существования критических файлов
+required_files = [
+    'bot/keyboards.py',
+    'admin_panel/static'
+]
+
+for file in required_files:
+    if not os.path.exists(file):
+        print(f"CRITICAL ERROR: Missing file/directory - {file}")
+        sys.exit(1)
+import os
 from fastapi import FastAPI, Request, Form, Depends, HTTPException
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
