@@ -3,7 +3,6 @@ from aiogram.dispatcher import FSMContext
 from bot.keyboards import create_anime_keyboard, create_episodes_keyboard
 
 def register_handlers(dp, db):
-    # Регистрация обработчиков
     dp.register_message_handler(start_command, commands=['start'])
     dp.register_message_handler(search_command, commands=['search'])
     dp.register_callback_query_handler(show_anime_details, lambda c: c.data.startswith('anime_'))
