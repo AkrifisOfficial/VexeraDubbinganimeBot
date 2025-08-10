@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админ-панель VexeraDubbing</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: #f5f8fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        header h1 {
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .notification {
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .form-section {
+            background: white;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .form-section h2 {
+            margin-bottom: 20px;
+            color: #2c3e50;
+            border-bottom: 2px solid #f0f0f0;
+            padding-bottom: 10px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #34495e;
+        }
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 16px;
+            transition: border 0.3s;
+        }
+        input:focus, select:focus, textarea:focus {
+            border-color: #3498db;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+        }
+        button {
+            background: linear-gradient(to right, #3498db, #2c3e50);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+        .help-text {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>Админ-панель VexeraDubbing</h1>
+        </div>
+    </header>
+
+    <div class="container">
+        {% if msg %}
+        <div class="notification success">
+            {{ msg }}
+        </div>
+        {% endif %}
+        
+        {% if error %}
+        <div class="notification error">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        <div class="form-section">
+            <h2>Добавить новое аниме</h2>
+            <form action="/add_anime" method="post">
+                <div class="form-group">
+                    <label for="title">Название аниме *</label>
+                    <input type="text" id="title" name="title" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="voiceover">Озвучка *</label>
+                    <input type="text" id="voiceover" name="voiceover" value="VexeraDubbing" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="description">Описание</label>
+                    <textarea id="description" name="description" rows="3"></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="poster_url">Ссылка на постер (URL)</label>
+                    <input type="text" id="poster_url" name="poster_url">
+                    <p class="help-text">Рекомендуется использовать CDN или облачное хранилище</p>
+                </div>
+                
+                <button type="submit">Добавить аниме</button>
+            </form>
+        </div>
+
+        <div class="form-section">
+            <h2>Добавить серию</h2>
+            <form action="/add_episode" method="post">
+                <div class="form-group">
+                    <label for="anime_id">Выберите аниме *</label>
+                    <select id="anime_id" name="anime_id" required>
+                        {% for anime in anime_list %}
+                        <option value="{{ anime.id }}">{{ anime.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="episode_number">Номер серии *</label>
+                    <input type="number" id="episode_number" name="episode_number" min="1" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="vk_url">Ссылка на видео VK *</label>
+                    <input type="text" id="vk_url" name="vk_url" required placeholder="https://vk.com/video-12345678_123456789">
+                    <p class="help-text">
+                        Примеры: <br>
+                        Публичное: https://vk.com/video-12345678_123456789<br>
+                        Приватное: https://vk.com/video_ext.php?oid=-12345678&id=123456789&hash=abcde12345
+                    </p>
+                </div>
+                
+                <button type="submit">Добавить серию</button>
+            </form>
+        </div>
+        
+        <footer>
+            <p>VexeraDubbing Admin Panel &copy; {{ now.year }}</p>
+        </footer>
+    </div>
+</body>
+</html>
