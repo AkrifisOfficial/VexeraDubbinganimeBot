@@ -1,7 +1,6 @@
 import os
 import re
 import psycopg2
-from psycopg2 import sql
 from contextlib import contextmanager
 
 class Database:
@@ -13,6 +12,11 @@ class Database:
             "host": os.getenv("DB_HOST"),
             "port": os.getenv("DB_PORT")
         }
+        # Если есть DATABASE_URL, используем его (для Railway)
+        if os.getenv("DATABASE_URL"):
+            self.conn_params = {
+                "dsn": os.getenv("DATABASE_URL")
+            }
         self.create_tables()
 
     @contextmanager
